@@ -16,7 +16,6 @@ const mainState = {
     game.stage.backgroundColor = '#2d2d2d';
     game.add.sprite(0,0,'backdrop');
 
-
     this.ship = game.add.sprite(400, 500, 'ship');
     //this.ship.body.sprite.scale.set(0.5,0.5);
     //game.physics.enable(this.ship, Phaser.Physics.ARCADE);
@@ -77,6 +76,8 @@ const mainState = {
 
     this.cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
+    let fire = true;
+
   },
 
   update: function () {
@@ -97,7 +98,13 @@ const mainState = {
       this.ship.body.velocity.x = 300;
     }
     if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-      this.fire();
+      if (fire){
+        this.fire();
+      }
+      fire = false;
+    }
+    else {
+      fire = true;
     }
   },
 
