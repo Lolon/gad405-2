@@ -5,7 +5,7 @@ const mainState = {
     game.load.image('enemy', 'assets/enemy.png');
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('backdrop', 'assets/backdrop.png');
-    game.load.spritesheet('explode', 'assets/explode.png', 128, 128);
+    game.load.spritesheet('explode', 'assets/explosionFlipboard.png', 128, 128);
     game.load.audio('fire', 'assets/fire.mp3');
     game.load.audio('destroy','assets/explode.mp3');
     game.load.audio('musicGameplay','assets/musicGameplay.mp3');
@@ -18,8 +18,9 @@ const mainState = {
 
     this.ship = game.add.sprite(400, 500, 'ship');
     //this.ship.body.sprite.scale.set(0.5,0.5);
-    //game.physics.enable(this.ship, Phaser.Physics.ARCADE);
-    game.physics.arcade.enable(this.ship);
+    game.physics.enable(this.ship, Phaser.Physics.ARCADE);
+    this.ship.body.immovable = true;
+    this.ship.body.setSize(40,60,45,45);
 
     this.aliens = game.add.group();
     game.physics.arcade.enable(this.aliens);
@@ -32,8 +33,10 @@ const mainState = {
       //c.body.immovable = true;
       c.body.velocity.setTo(game.rnd.integerInRange(-200, 200),game.rnd.integerInRange(-200, 200));
       c.body.collideWorldBounds = true;
+      //c.body.collidesWith = [this.ship];
       c.body.bounce.set(1);
       c.body.sprite.scale.set(0.5,0.5);
+      c.body.setSize(20,20,45,45);
 
     }
 
@@ -51,13 +54,17 @@ const mainState = {
 
     this.bulletTime = 0;
 
-    this.explosion = this.game.add.sprite(0, 0, 'explode');
-    this.explosion.exists = false;
-    this.explosion.visible = false;
-    // this.explosion.frame = 6; // show one frame of the spritesheet
-    this.explosion.anchor.x = 0.5;
-    this.explosion.anchor.y = 0.5;
-    this.explosion.animations.add('boom');
+    this.explosions = game.add.group();
+    for (let i = 0; i < 20; i++){
+      let e = this.explosions.create(0, 0, 'explode');
+      e.exists = false;
+      e.visible = false;
+      // this.explosion.frame = 6; // show one frame of the spritesheet
+      e.anchor.x = 0.5;
+      e.anchor.y = 0.5;
+      e.animations.add('boom');
+      e.events.onAnimationComplete.add((explosion) => { explosion.kill(); });
+    }
 
     //this.highScore = localStorage.getItem('invadershighscore');
     //if (this.highScore === null) {
@@ -82,7 +89,8 @@ const mainState = {
 
   update: function () {
     game.physics.arcade.overlap(this.bullets, this.aliens, this.hit, null, this);
-    //game.physics.arcade.overlap(this.aliens, this.ship, this.shipGotHit, null, this);
+    game.physics.arcade.collide(this.aliens, this.ship);
+
 
     this.ship.body.velocity.x = 0;
     this.aliens.forEach(
@@ -133,6 +141,13 @@ const mainState = {
     this.destroysound.play();
     bullet.kill();
     enemy.kill();
+
+    let explosion = this.explosions.getFirstExists(false);
+    if (explosion) {
+      explosion.reset(enemy.x + (enemy.width/2),enemy.y+(enemy.height/2));
+      explosion.animations.play('boom');
+    }
+
     if (this.aliens.countLiving() === 0) {
       //this.score = this.score + 100;
       //this.gameOver();
@@ -143,13 +158,17 @@ const mainState = {
     //this.scoreDisplay.text = `Score: ${this.score} \nHighScore: ${this.highScore}`;
   },
 
+  render: function(){
+    //game.debug.bodyInfo(this.ship,32,32);
+    //game.debug.body(this.ship);
+  },
+
   shipGotHit: function (alien, ship) {
     this.explosion.reset(this.ship.x + (this.ship.width / 2), this.ship.y + (this.ship.height / 2));
     this.ship.kill();
     this.explosion.animations.play('boom');
   },
-
-  };
+};
 
 const gameoverState = {
   preload: function () {
