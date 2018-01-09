@@ -70,13 +70,19 @@ const mainState = {
     this.destroysound = game.add.audio('destroy');
     this.musicGameplaySound = game.add.audio('musicGameplay');
     this.musicGameplaySound.loop = true;
-    this.musicGameplaySound.play();
+    //this.musicGameplaySound.play();
+    this.musicOutroSound = game.add.audio('musicOutro');
+    this.musicOutroSound.loop = true;
+
+    this.musicHandler(true);
+
 
     this.cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
     let fire = true;
 
     game.input.mouse.capture = true;
+
   },
 
   update: function () {
@@ -136,11 +142,18 @@ const mainState = {
       c.body.sprite.scale.set(0.5,0.5);
       c.body.setSize(20,20,45,45);
     }
+    if (this.aliens.countLiving() === 1) {
+      this.musicHandler(true);
+
+      //this.musicOutroSound.fadeOut(6000);
+      //this.musicOutroSound.onFadeComplete.add(stop);
+    //  this.musicGameplaySound.resume();
+    }
   },
 
   hit: function (bullet, enemy) {
     this.destroysound.play();
-    bullet.kill();
+    //bullet.kill();
     enemy.kill();
 
     let explosion = this.explosions.getFirstExists(false);
@@ -150,10 +163,29 @@ const mainState = {
     }
 
     if (this.aliens.countLiving() === 0) {
+      this.musicHandler(false);
+      //this.musicGameplaySound.fadeOut(6000);
+      //this.musicGameplaySound.onFadeComplete.add(stop);
+      //this.musicOutroSound.resume();
+    }
+  },
 
+  musicHandler: function (HasAlien){
+    if (HasAlien){
+      //game.debug.text( this.musicGameplaySound.volume, 100, 380 );
+      this.musicOutroSound.fadeOut(6000);
+      if (this.musicGameplaySound.volume <1){
+        this.musicGameplaySound.fadeIn(6000);
+      }
+      else{this.musicGameplaySound.play();}
+    }
+    else {
+    //  game.debug.text( "No Alien", 100, 380 );
       this.musicGameplaySound.fadeOut(6000);
-      musicOutroSound = game.add.audio('musicOutro');
-      musicOutroSound.play();
+      if (this.musicOutroSound.volume <1){
+        this.musicOutroSound.fadeIn(6000);
+      }
+      else{this.musicOutroSound.play();}
     }
   },
 
