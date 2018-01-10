@@ -10,10 +10,16 @@ const mainState = {
     game.load.audio('destroy','assets/explode.mp3');
     game.load.audio('musicGameplay','assets/musicGameplay.mp3');
     game.load.audio('musicOutro','assets/musicOutro.mp3')
+
+
   },
 
   create: function () {
     game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+    this.game.scale.pageAlignHorizontally = true;
+    this.game.scale.pageAlignVertically = true;
+    this.game.scale.refresh();
+
 
     game.stage.backgroundColor = '#2d2d2d';
     game.add.sprite(0,0,'backdrop');

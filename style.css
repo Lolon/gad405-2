@@ -1,0 +1,42 @@
+h1{
+  color: #4595ad;
+  font-family:sans-serif;
+  font-size: 50px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 12px;
+  height: 10px;
+}
+h2{
+  color: #3d8499;
+  font-family:sans-serif;
+  font-size: 18px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 25px;
+  height: 18px;
+}
+h3{
+  color: #347184;
+  font-family:serif;
+  font-size: 15px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 28px;
+  height: 20px;
+}
+h4{
+  color: #347184;
+  font-family:serif;
+  font-size: 15px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 28px;
+  height: 40px;
+  padding: 40px;
+}
+body{
+  background-color:#252c2f; /*neutral grey, similar to the begin screen*/
+/*  padding: 50%; /*remove any padding around the body for cleaner presentation. Same with margin*/
+  /*margin: 50%;*/
+}
